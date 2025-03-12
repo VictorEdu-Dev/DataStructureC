@@ -35,14 +35,6 @@ void bubble_sort(int size, int *array) {
     }
 }
 
-void quick_sort(int n, int *v) {
-    if (n > 1) {
-        int pivot_index = partition(v, n);
-        quick_sort(pivot_index, v);
-        quick_sort(n - pivot_index - 1, v + pivot_index + 1);
-    }
-}
-
 int partition(int *v, int n) {
     int pivot = v[0];
     int left = 1;
@@ -50,12 +42,10 @@ int partition(int *v, int n) {
 
     while (1) {
         while (left < n && v[left] <= pivot) left++;
-        while (v[right] > pivot) right--;
+        while (right > 0 && v[right] > pivot) right--;
 
         if (left < right) {
             swap(&v[left], &v[right]);
-            left++;
-            right--;
         } else {
             break;
         }
@@ -63,6 +53,21 @@ int partition(int *v, int n) {
 
     swap(&v[0], &v[right]);
     return right;
+}
+
+void quick_sort(int n, int *v) {
+    while (n > 1) {
+        int pivot_index = partition(v, n);
+
+        if (pivot_index < n - pivot_index - 1) {
+            quick_sort(pivot_index, v);
+            v += pivot_index + 1;
+            n -= pivot_index + 1;
+        } else {
+            quick_sort(n - pivot_index - 1, v + pivot_index + 1);
+            n = pivot_index;
+        }
+    }
 }
 
 void swap(int *a, int *b) {
